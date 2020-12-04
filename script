@@ -1,0 +1,29 @@
+function check-portgroup-security {
+get-virtualswitch -distributed | %{
+Get-VirtualPortGroup -Distributed -VirtualSwitch $_ |
+Select Name,
+@{N="AllowPromiscuous";E={$_.extensiondata.config.DefaultPortConfig.SecurityPolicy.AllowPromiscuous.Value}},
+@{N="ForgedTransmits";E={$_.extensiondata.config.DefaultPortConfig.SecurityPolicy.ForgedTransmits.Value}},
+@{N="MacChanges";E={$_.extensiondata.config.DefaultPortConfig.SecurityPolicy.MacChanges.Value}}
+}
+}
+ 
+#Connect to the first vCenter
+$VIServer1 = "vcenter_FQDN"
+$VIUser1 = "administrator@vsphere.local"
+$VIPass1 = "*****"
+Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
+Disconnect-VIServer -Server * -Force -Confirm:$false
+Connect-VIServer -server $VIServer1 -user $VIUser1 -pass $VIPass1
+#call function
+check-portgroup-security | Out-File -FilePath c:\check-portgroup-security-vc01.csv
+ 
+#Connect to the second vCenter
+$VIServer2 = "vcenter_FQDN"
+$VIUser2 = "administrator@vsphere.local"
+$VIPass2 = "*****"
+Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
+Disconnect-VIServer -Server * -Force -Confirm:$false
+Connect-VIServer -server $VIServer2 -user $VIUser2 -pass $VIPass2
+#call function
+check-portgroup-security | Out-File -FilePath c:\check-portgroup-security-vc02.csv
