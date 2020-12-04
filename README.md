@@ -2,4 +2,6 @@
 
 After applying the script you should have a CSV file aas follows
 
-Name  AllowPromiscous ForgedTransmits MacChanges
+    
+Name | AllowPromiscous | ForgedTransmits | MacChanges
+------------ | ------------- | ------------ | -------------
